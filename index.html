@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Spring Data Limited — data services, data modelling, Neo4j & MarkLogic consulting, and game development." />
+  <title>Spring Data Limited | Data Services • Graph Modelling • MarkLogic • Game Development</title>
+
+  <meta property="og:title" content="Spring Data Limited" />
+  <meta property="og:description" content="Data services, data modelling, Neo4j & MarkLogic consulting, and game development." />
+  <meta property="og:type" content="website" />
+
+  <style>
+    :root{
+      --bg: #0b1220;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --line: rgba(255,255,255,.14);
+      --accent: #7c3aed; /* purple */
+      --accent2: #22c55e; /* green */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1100px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    *{ box-sizing: border-box; }
+    html{ scroll-behavior:smooth; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(1000px 600px at 20% 0%, rgba(124,58,237,.25), transparent 60%),
+        radial-gradient(1000px 600px at 90% 10%, rgba(34,197,94,.18), transparent 55%),
+        radial-gradient(900px 700px at 50% 90%, rgba(59,130,246,.12), transparent 55%),
+        var(--bg);
+      line-height: 1.5;
+    }
+
+    a{ color: inherit; text-decoration:none; }
+    a:hover{ text-decoration: underline; }
+
+    .wrap{ max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+    .nav{
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(11,18,32,.55);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      padding: 14px 0;
+      gap: 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap: 10px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+    .logo{
+      width: 34px; height: 34px; border-radius: 12px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), transparent 45%),
+        linear-gradient(135deg, var(--accent), #2563eb);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .brand small{
+      display:block;
+      font-weight:600;
+      color: var(--muted);
+      letter-spacing: .3px;
+      font-size: 12px;
+      margin-top: -2px;
+    }
+
+    .menu{
+      display:flex; align-items:center; gap: 14px;
+    }
+    .menu a{
+      color: var(--muted);
+      padding: 8px 10px;
+      border-radius: 12px;
+    }
+    .menu a:hover{
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      text-decoration:none;
+    }
+
+    .cta{
+      display:flex; align-items:center; gap: 10px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      font-weight: 650;
+      box-shadow: 0 8px 22px rgba(0,0,0,.20);
+      text-decoration:none;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      background: rgba(255,255,255,.10);
+      transform: translateY(-1px);
+      text-decoration:none;
+    }
+    .btn.primary{
+      border: 1px solid rgba(124,58,237,.45);
+      background: linear-gradient(135deg, rgba(124,58,237,.85), rgba(37,99,235,.75));
+    }
+    .btn.primary:hover{
+      background: linear-gradient(135deg, rgba(124,58,237,.95), rgba(37,99,235,.85));
+    }
+
+    .hamburger{
+      display:none;
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor:pointer;
+    }
+
+    header.hero{
+      padding: 66px 0 26px;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .hero-card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      overflow:hidden;
+      position:relative;
+    }
+    .hero-card:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(600px 250px at 30% 20%, rgba(124,58,237,.24), transparent 60%),
+                  radial-gradient(520px 260px at 70% 35%, rgba(34,197,94,.18), transparent 60%);
+      pointer-events:none;
+      filter: blur(10px);
+      opacity:.75;
+    }
+    .hero-card > *{ position:relative; }
+    .kicker{
+      display:inline-flex; gap:10px; align-items:center;
+      color: var(--muted);
+      font-weight: 650;
+      letter-spacing:.2px;
+      font-size: 13px;
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 7px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+      margin-bottom: 14px;
+    }
+    .dot{
+      width: 9px; height: 9px; border-radius: 999px;
+      background: var(--accent2);
+      box-shadow: 0 0 0 4px rgba(34,197,94,.12);
+    }
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.1vw, 44px);
+      letter-spacing: -0.6px;
+      line-height: 1.1;
+    }
+    .lead{
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 62ch;
+    }
+    .hero-actions{
+      display:flex; flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .mini{
+      display:flex; gap: 12px; flex-wrap:wrap;
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+    }
+    .pill b{ color: var(--text); }
+
+    .side-card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .side-card h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing:-.2px;
+    }
+    .side-card p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .list{
+      margin: 0;
+      padding: 0;
+      list-style:none;
+      display:grid;
+      gap: 10px;
+    }
+    .list li{
+      display:flex; gap: 10px; align-items:flex-start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.035);
+    }
+    .check{
+      width: 18px; height: 18px;
+      border-radius: 6px;
+      background: rgba(34,197,94,.16);
+      border: 1px solid rgba(34,197,94,.35);
+      display:flex; align-items:center; justify-content:center;
+      margin-top: 1px;
+      flex: 0 0 auto;
+    }
+    .check svg{ width: 12px; height: 12px; }
+
+    section{
+      padding: 28px 0;
+    }
+    .section-head{
+      display:flex; justify-content:space-between; align-items:flex-end;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+    .section-head h2{
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -.3px;
+    }
+    .section-head p{
+      margin:0;
+      color: var(--muted);
+      max-width: 70ch;
+      font-size: 14px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 14px;
+    }
+    .card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.22);
+      min-height: 100%;
+    }
+    .card h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: -.2px;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .card .tagrow{
+      display:flex; flex-wrap:wrap; gap: 8px;
+      margin-top: 12px;
+    }
+    .tag{
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      padding: 6px 9px;
+      border-radius: 999px;
+    }
+
+    .col-6{ grid-column: span 6; }
+    .col-4{ grid-column: span 4; }
+    .col-8{ grid-column: span 8; }
+    .col-12{ grid-column: span 12; }
+
+    .callout{
+      border: 1px solid rgba(124,58,237,.35);
+      background: linear-gradient(135deg, rgba(124,58,237,.20), rgba(37,99,235,.12));
+      border-radius: var(--radius);
+      padding: 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+    .callout strong{ font-size: 15px; }
+    .callout span{ color: var(--muted); font-size: 14px; display:block; margin-top: 2px; }
+
+    footer{
+      padding: 22px 0 40px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      margin-top: 24px;
+    }
+    .footer-grid{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .subtle a{ color: var(--muted); }
+    .subtle a:hover{ color: var(--text); }
+
+    /* Mobile */
+    @media (max-width: 920px){
+      .hero-grid{ grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px){
+      .menu{ display:none; }
+      .hamburger{ display:inline-flex; align-items:center; justify-content:center; }
+      .cta{ margin-left:auto; }
+      .mobile-open .menu{
+        display:flex;
+        flex-direction:column;
+        align-items:stretch;
+        gap: 6px;
+        padding: 8px 0 12px;
+      }
+      .mobile-open .menu a{
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.10);
+      }
+      .col-6{ grid-column: span 12; }
+      .col-4{ grid-column: span 12; }
+      .col-8{ grid-column: span 12; }
+      .section-head{ flex-direction:column; align-items:flex-start; }
+      .callout{ flex-direction:column; align-items:flex-start; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Spring Data Limited",
+    "description": "Data services, data modelling, Neo4j & MarkLogic consulting, and game development.",
+    "url": "",
+    "sameAs": []
+  }
+  </script>
+</head>
+
+<body>
+  <div class="nav" id="top">
+    <div class="wrap">
+      <div class="nav-inner" id="navInner">
+        <a class="brand" href="#top" aria-label="Spring Data Limited home">
+          <span class="logo" aria-hidden="true"></span>
+          <span>
+            Spring Data Limited
+            <small>Data services • Graph modelling • MarkLogic • Games</small>
+          </span>
+        </a>
+
+        <nav class="menu" aria-label="Primary navigation">
+          <a href="#services">Services</a>
+          <a href="#expertise">Expertise</a>
+          <a href="#how">How we work</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="cta">
+          <a class="btn primary" href="#contact">Start a conversation</a>
+          <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            ☰
+          </button>
+        </div>
+      </div>
+      <nav class="menu" id="mobileMenu" aria-label="Mobile navigation">
+        <a href="#services">Services</a>
+        <a href="#expertise">Expertise</a>
+        <a href="#how">How we work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="hero-card">
+          <div class="kicker"><span class="dot" aria-hidden="true"></span> Practical delivery. Clean architecture. Measurable outcomes.</div>
+          <h1>Build reliable data platforms and interactive products—without the chaos.</h1>
+          <p class="lead">
+            Spring Data Limited delivers end-to-end data services: data modelling, database consulting
+            (including <b>Neo4j</b> and <b>MarkLogic</b>), integration engineering, and game development.
+            We help you ship faster with confidence—through clear designs, production-grade implementations, and pragmatic support.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn primary" href="#contact">Request a quote</a>
+            <a class="btn" href="#services">Explore services</a>
+            <a class="btn" href="#how">Engagement models</a>
+          </div>
+
+          <div class="mini" aria-label="Highlights">
+            <span class="pill"><b>Consulting</b> — architecture & reviews</span>
+            <span class="pill"><b>Delivery</b> — build & migrate</span>
+            <span class="pill"><b>Enablement</b> — training & handover</span>
+          </div>
+        </div>
+
+        <aside class="side-card">
+          <h3>What you get</h3>
+          <p>Senior expertise and direct communication—no hand-offs, no surprises.</p>
+          <ul class="list">
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <b>Clear data models</b><br/>
+                <span style="color:var(--muted); font-size:13px;">Conceptual → logical → physical, with constraints and performance in mind.</span>
+              </div>
+            </li>
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <b>Production-ready implementation</b><br/>
+                <span style="color:var(--muted); font-size:13px;">CI/CD, observability, testing, and runbooks—built in.</span>
+              </div>
+            </li>
+            <li>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div>
+                <b>Fast feedback loops</b><br/>
+                <span style="color:var(--muted); font-size:13px;">Short iterations, visible progress, and practical trade-offs.</span>
+              </div>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="services">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Services</h2>
+            <p>Pick a single capability or combine them into an end-to-end delivery.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card col-6">
+            <h3>Data Services & Engineering</h3>
+            <p>Data pipelines, APIs, migrations, quality checks, and operational hardening—from prototype to production.</p>
+            <div class="tagrow">
+              <span class="tag">ETL / ELT</span><span class="tag">APIs</span><span class="tag">Data quality</span><span class="tag">Observability</span>
+            </div>
+          </div>
+
+          <div class="card col-6">
+            <h3>Data Modelling & Graph Modelling</h3>
+            <p>Robust models tailored to your use cases: query patterns, constraints, indexing, and performance.</p>
+            <div class="tagrow">
+              <span class="tag">Domain modelling</span><span class="tag">Neo4j</span><span class="tag">Cypher</span><span class="tag">GraphQL</span>
+            </div>
+          </div>
+
+          <div class="card col-4">
+            <h3>Neo4j Consulting</h3>
+            <p>Architecture, clustering, performance tuning, query reviews, and production best practices.</p>
+            <div class="tagrow">
+              <span class="tag">Topology</span><span class="tag">Performance</span><span class="tag">Security</span>
+            </div>
+          </div>
+
+          <div class="card col-4">
+            <h3>MarkLogic Consulting</h3>
+            <p>Schema/design guidance, content pipelines, search relevance, and operational support for MarkLogic platforms.</p>
+            <div class="tagrow">
+              <span class="tag">Search</span><span class="tag">XML/JSON</span><span class="tag">Indexing</span>
+            </div>
+          </div>
+
+          <div class="card col-4">
+            <h3>Game Development</h3>
+            <p>Prototyping to shipped builds—gameplay systems, backend services, tooling, and live-ops foundations.</p>
+            <div class="tagrow">
+              <span class="tag">Gameplay</span><span class="tag">Tools</span><span class="tag">Backend</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="height:14px"></div>
+
+        <div class="callout" role="note" aria-label="Call to action">
+          <div>
+            <strong>Need an audit first?</strong>
+            <span>We can review your current data model, Neo4j/MarkLogic setup, or pipeline design and deliver a prioritized improvement plan.</span>
+          </div>
+          <a class="btn primary" href="#contact">Book an initial call</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="expertise">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Technical expertise</h2>
+            <p>We work across modern data stacks—choosing tools that fit your constraints and roadmap.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card col-8">
+            <h3>Platforms & tooling</h3>
+            <p>
+              Neo4j, MarkLogic, GraphQL, REST, event-driven architectures, containerization, and cloud deployment patterns.
+              We focus on maintainable designs, testability, and operational clarity.
+            </p>
+            <div class="tagrow" aria-label="Technology tags">
+              <span class="tag">Neo4j</span><span class="tag">Cypher</span><span class="tag">MarkLogic</span><span class="tag">GraphQL</span>
+              <span class="tag">Java</span><span class="tag">Python</span><span class="tag">.NET</span><span class="tag">Docker</span>
+              <span class="tag">Kubernetes</span><span class="tag">AWS</span><span class="tag">Azure</span><span class="tag">GCP</span>
+            </div>
+          </div>
+
+          <div class="card col-4">
+            <h3>Common outcomes</h3>
+            <p>Typical goals we help teams achieve:</p>
+            <div class="tagrow">
+              <span class="tag">Faster queries</span>
+              <span class="tag">Cleaner models</span>
+              <span class="tag">Lower risk releases</span>
+              <span class="tag">Better search</span>
+              <span class="tag">Scalable pipelines</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>How we work</h2>
+            <p>Simple engagement models—choose what matches your needs and timeline.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card col-4">
+            <h3>Advisory</h3>
+            <p>Architecture reviews, data model validation, performance triage, and migration planning.</p>
+            <div class="tagrow">
+              <span class="tag">Fixed scope</span><span class="tag">Rapid assessment</span>
+            </div>
+          </div>
+          <div class="card col-4">
+            <h3>Delivery</h3>
+            <p>We build with your team: implementation, automation, testing, and production rollout.</p>
+            <div class="tagrow">
+              <span class="tag">Iterative</span><span class="tag">Production-ready</span>
+            </div>
+          </div>
+          <div class="card col-4">
+            <h3>Enablement</h3>
+            <p>Training, workshops, pair-programming, and handover documentation to keep you moving.</p>
+            <div class="tagrow">
+              <span class="tag">Workshops</span><span class="tag">Playbooks</span>
+            </div>
+          </div>
+
+          <div class="card col-12">
+            <h3>Typical delivery flow</h3>
+            <p>
+              1) Discover → 2) Model & design → 3) Build & test → 4) Deploy & observe → 5) Handover & support.
+              Each step produces artifacts you can keep: diagrams, decisions, runbooks, and benchmarks.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <h2>Contact</h2>
+            <p>Tell us what you’re building and what “success” looks like. We’ll respond with next steps.</p>
+          </div>
+        </div>
+
+        <div class="grid">
+          <div class="card col-8">
+            <h3>Start a conversation</h3>
+            <p>
+              Email:
+              <a href="mailto:hello@springdatalimited.com">hello@springdatalimited.com</a>
+              <br/>
+              Location: UK (remote-friendly)
+              <br/>
+              Prefer a quick call? Include your timezone and 2–3 suggested slots.
+            </p>
+
+            <div class="tagrow" style="margin-top:14px;">
+              <a class="btn primary" href="mailto:hello@springdatalimited.com?subject=Spring%20Data%20Limited%20-%20Project%20Enquiry&body=Hi%20Spring%20Data%20Limited%2C%0A%0AProject%20summary%3A%20%0ATimeline%3A%20%0AStack%3A%20%0ASuccess%20criteria%3A%20%0A%0AThanks%2C">
+                Email us
+              </a>
+              <a class="btn" href="#services">Review services</a>
+            </div>
+          </div>
+
+          <div class="card col-4">
+            <h3>Quick checklist</h3>
+            <p>For a faster estimate, include:</p>
+            <div class="tagrow">
+              <span class="tag">Use cases</span>
+              <span class="tag">Current stack</span>
+              <span class="tag">Data volume</span>
+              <span class="tag">SLAs</span>
+              <span class="tag">Timeline</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div class="subtle">
+        © <span id="year"></span> Spring Data Limited. All rights reserved.
+      </div>
+      <div class="subtle">
+        <a href="#top">Back to top</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const navInner = document.getElementById('navInner');
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let open = false;
+
+    function setOpen(next) {
+      open = next;
+      hamburger.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('mobile-open', open);
+      mobileMenu.style.display = open ? 'flex' : 'none';
+    }
+
+    hamburger?.addEventListener('click', () => setOpen(!open));
+
+    // Close menu when clicking a link (mobile)
+    mobileMenu?.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => setOpen(false));
+    });
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
